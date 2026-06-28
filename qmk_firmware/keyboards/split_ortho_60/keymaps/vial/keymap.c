@@ -6,7 +6,11 @@
 #include "qmk_settings.h"
 #endif
 
-/* USER INCLUDE BEGIN *//* USER INCLUDE END */
+/* USER INCLUDE BEGIN */
+
+#include "pointing_device.h"
+
+/* USER INCLUDE END */
 
 /* GENERATED CODE BEGIN */
 
@@ -218,4 +222,41 @@ void __wrap_dynamic_keymap_reset(void) {
 /* GENERATED CODE END */
 
 
-/* USER CODE BEGIN *//* USER CODE END */
+/* USER CODE BEGIN */
+
+static bool scroll_mode = false;
+
+void keyboard_post_init_user(void) {
+    set_auto_mouse_enable(true);
+}
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+
+    if (keycode == KC_F24) {
+        scroll_mode = record->event.pressed;
+        return false;
+    }
+
+    return true;
+}
+
+report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
+
+    int16_t x = mouse_report.x;
+    int16_t y = mouse_report.y;
+
+    mouse_report.x = -y;
+    mouse_report.y = x;
+
+    if (scroll_mode) {
+        mouse_report.h = mouse_report.x / 12;
+        mouse_report.v = -mouse_report.y / 12;
+
+        mouse_report.x = 0;
+        mouse_report.y = 0;
+    }
+
+    return mouse_report;
+}
+
+/* USER CODE END */
