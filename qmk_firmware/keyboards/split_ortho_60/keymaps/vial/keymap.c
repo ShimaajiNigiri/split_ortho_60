@@ -2,6 +2,8 @@
 
 #include QMK_KEYBOARD_H
 
+#error "THIS IS MY KEYMAP"
+
 #ifdef QMK_SETTINGS
 #include "qmk_settings.h"
 #endif
