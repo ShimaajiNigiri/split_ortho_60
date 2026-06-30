@@ -231,9 +231,11 @@ void keyboard_post_init_user(void) {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
-    if (keycode == KC_F24) {
-        scroll_mode = record->event.pressed;
-        return false;
+    switch (keycode) {
+
+        case KC_F24:
+            scroll_mode = record->event.pressed;
+            break;
     }
 
     return true;
@@ -244,12 +246,13 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
     int16_t x = mouse_report.x;
     int16_t y = mouse_report.y;
 
+    // 90°回転補正
     mouse_report.x = -y;
     mouse_report.y = x;
 
     if (scroll_mode) {
-        mouse_report.h = mouse_report.x / 12;
-        mouse_report.v = -mouse_report.y / 12;
+        mouse_report.h = mouse_report.x;
+        mouse_report.v = -mouse_report.y;
 
         mouse_report.x = 0;
         mouse_report.y = 0;
